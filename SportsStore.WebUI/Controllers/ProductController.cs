@@ -11,6 +11,7 @@ namespace SportsStore.WebUI.Controllers
     public class ProductController : Controller
     {
         private IProductRepository repository;
+        public int PageSize = 4;
 
         // This method will allow Ninject to inject the dependency for the 
         // product repository when it instantiates the controller class.
@@ -19,9 +20,12 @@ namespace SportsStore.WebUI.Controllers
             this.repository = productRepository;
         }
 
-        public ViewResult List()
+        public ViewResult List(int page = 1)
         {
-            return View(repository.Products);
+            return View(repository.Products
+                .OrderBy(p => p.ProductID)
+                .Skip((page - 1) * PageSize)
+                .Take(PageSize));
         }
     }
 }
